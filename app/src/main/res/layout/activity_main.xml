@@ -22,7 +22,7 @@ tools:context="com.example.somesh.locateall.MainActivity">
     android:layout_height="wrap_content"
     android:layout_margin="20dp"
     android:textColor="@android:color/white"
-    android:text="GPS is loading..."/>
+    android:text="@string/gps_loading"/>
 
 <ImageButton
     android:layout_width="wrap_content"
