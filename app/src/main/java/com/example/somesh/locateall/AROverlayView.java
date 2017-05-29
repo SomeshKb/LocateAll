@@ -139,7 +139,6 @@ else {
         Random rand = new Random();
         int  n = rand.nextInt(100) + 1;
         int altitude=n*20;
-        Toast.makeText(getContext(),""+n,Toast.LENGTH_SHORT).show();
                 arPoints = new ArrayList<>();
         int i=0;
         for (ARPoint place : output) {

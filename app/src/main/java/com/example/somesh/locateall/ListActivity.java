@@ -12,11 +12,9 @@ import static com.example.somesh.locateall.AROverlayView.API_URL;
 
 public class ListActivity extends AppCompatActivity implements AsyncResponse{
 
-    private static final String API_QUERY = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=23.2599,77.4126&radius=20000&type=train_station&sensor=true&key=AIzaSyCUA3sVAVODHyhgLgXahQ3EKqFGyAZK73o";
     private String TAG = MainActivity.class.getSimpleName();
     private ARPointAdapter mAdapter;
 
-    List<ARPoint> arPointList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
