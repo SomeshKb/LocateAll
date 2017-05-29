@@ -8,23 +8,28 @@ import android.graphics.Typeface;
 import android.location.Location;
 import android.opengl.Matrix;
 import android.os.AsyncTask;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Created by somesh on 4/30/17.
  */
 
+
+
 public class AROverlayView extends View implements AsyncResponse{
 
     Context context;
-    private static final String API_URL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=23.2599,77.4126&radius=50000&type=train_station&sensor=true&key=AIzaSyCUA3sVAVODHyhgLgXahQ3EKqFGyAZK73o";
+    public static  String API_URL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=23.2599,77.4126&radius=20000&type=train_station&sensor=true&key=AIzaSyCUA3sVAVODHyhgLgXahQ3EKqFGyAZK73o";
     private float[] rotatedProjectionMatrix = new float[16];
     private Location currentLocation;
     private List<ARPoint> arPoints;
@@ -32,11 +37,12 @@ public class AROverlayView extends View implements AsyncResponse{
 
 
     public AROverlayView(Context context) {
+
         super(context);
         this.context = context;
-        PlacesAsyncTask placesAsyncTask= new PlacesAsyncTask();
-        placesAsyncTask.delegate = this;
-        placesAsyncTask.execute(API_URL);
+      //  PlacesAsyncTask placesAsyncTask= new PlacesAsyncTask();
+        //placesAsyncTask.delegate = this;
+        //placesAsyncTask.execute(API_URL);
         Log.e("API",API_URL);
     }
 
@@ -45,12 +51,19 @@ public class AROverlayView extends View implements AsyncResponse{
         this.invalidate();
     }
 
-    public void updateCurrentLocation(Location currentLocation){
+    public void updateCurrentLocation(Location currentLocation, int range){
         if(currentLocation==null){
             Toast.makeText(getContext(),"Please Check Network Setting",Toast.LENGTH_SHORT).show();
         }
         else {
 
+            String API_URL1 = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location="+currentLocation.getLatitude()+","+currentLocation.getLongitude()+"&radius="+range+"&type=train_station&sensor=true&key=AIzaSyCUA3sVAVODHyhgLgXahQ3EKqFGyAZK73o";
+
+            PlacesAsyncTask placesAsyncTask= new PlacesAsyncTask();
+            placesAsyncTask.delegate = this;
+            placesAsyncTask.execute(API_URL1);
+            Log.e("API",API_URL1);
+            API_URL=API_URL1;
             this.currentLocation = currentLocation;
             this.invalidate();
         }
@@ -59,8 +72,6 @@ public class AROverlayView extends View implements AsyncResponse{
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-
-
         if (currentLocation == null) {
             return;
         }
@@ -125,13 +136,17 @@ else {
     @Override
     public void processFinish(List<ARPoint> output) {
 
-        arPoints = new ArrayList<>();
+        Random rand = new Random();
+        int  n = rand.nextInt(100) + 1;
+        int altitude=n*20;
+        Toast.makeText(getContext(),""+n,Toast.LENGTH_SHORT).show();
+                arPoints = new ArrayList<>();
         int i=0;
         for (ARPoint place : output) {
             Double latP = place.getLocation().getLatitude();
             Double lngP = place.getLocation().getLongitude();
             String placeName = place.getName();
-            arPoints.add(new ARPoint(placeName, latP, lngP, 0));
+            arPoints.add(new ARPoint(placeName, latP, lngP, altitude));
             Log.e("AR POINT:",arPoints.get(i++).toString());
         }
 

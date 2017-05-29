@@ -22,6 +22,7 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,8 +31,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements SensorEventListener, LocationListener {
-
+public class MainActivity extends AppCompatActivity implements SensorEventListener, LocationListener ,SeekBar.OnSeekBarChangeListener {
+    SeekBar seekBar;
     final static String TAG = "MainActivity";
     private SurfaceView surfaceView;
     private FrameLayout cameraContainerLayout;
@@ -40,6 +41,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private ARCamera arCamera;
     private TextView tvCurrentLocation;
 
+    private int range;
     private SensorManager sensorManager;
     private final static int REQUEST_CAMERA_PERMISSIONS_CODE = 11;
     public static final int REQUEST_LOCATION_PERMISSIONS_CODE = 0;
@@ -48,6 +50,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private static final long MIN_TIME_BW_UPDATES = 0;//1000 * 60 * 1; // 1 minute
 
     private LocationManager locationManager;
+    private TextView textView;
     public Location location;
     boolean isGPSEnabled;
     boolean isNetworkEnabled;
@@ -58,6 +61,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        seekBar=(SeekBar)findViewById(R.id.seekBar);
+        seekBar.setOnSeekBarChangeListener(this);
         sensorManager = (SensorManager) this.getSystemService(SENSOR_SERVICE);
         cameraContainerLayout = (FrameLayout) findViewById(R.id.camera_container_layout);
         surfaceView = (SurfaceView) findViewById(R.id.surface_view);
@@ -233,7 +238,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 Toast.makeText(this,"Please Check Location Setting",Toast.LENGTH_SHORT).show();
             }
             else {
-                arOverlayView.updateCurrentLocation(location);
+                range=seekBar.getProgress();
+                range=range*1000;
+
+                arOverlayView.updateCurrentLocation(location,range);
                 tvCurrentLocation.setText(String.format("lat: %s \nlon: %s \naltitude: %s \n",
                         location.getLatitude(), location.getLongitude(), location.getAltitude()));
             }
@@ -266,4 +274,21 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         startActivity(intent);
     }
 
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+
+        range=progress*1000;
+    }
+
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {
+
+    }
+
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {
+        Toast.makeText(MainActivity.this,"Range :"+range/1000+" km",Toast.LENGTH_SHORT).show();
+        updateLatestLocation();
+
+    }
 }

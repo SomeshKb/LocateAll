@@ -7,18 +7,24 @@
         android:layout_width="0dp"
         android:layout_weight="1.5"
         android:id="@+id/name"
+        android:textColor="#344595"
+        android:textSize="15sp"
         android:layout_height="wrap_content" />
 
     <TextView
         android:layout_width="0dp"
         android:layout_weight="1"
+        android:textSize="15sp"
+        android:textColor="#344595"
         android:id="@+id/latitude"
         android:layout_height="wrap_content" />
 
     <TextView
         android:layout_width="0dp"
         android:layout_weight="1"
+        android:textColor="#344595"
         android:id="@+id/longitude"
+        android:textSize="15sp"
         android:layout_height="wrap_content" />
 
 </LinearLayout>
