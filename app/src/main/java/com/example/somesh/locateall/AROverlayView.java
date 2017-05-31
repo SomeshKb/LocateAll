@@ -29,11 +29,12 @@ import java.util.Random;
 public class AROverlayView extends View implements AsyncResponse{
 
     Context context;
-    public static  String API_URL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=23.2599,77.4126&radius=20000&type=train_station&sensor=true&key=AIzaSyCUA3sVAVODHyhgLgXahQ3EKqFGyAZK73o";
+    String API_URL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=23.2599,77.4126&radius=20000&type=train_station&sensor=true&key=AIzaSyCUA3sVAVODHyhgLgXahQ3EKqFGyAZK73o";
     private float[] rotatedProjectionMatrix = new float[16];
     private Location currentLocation;
     private List<ARPoint> arPoints;
-
+    public static int range;
+    public static Location currentLocation1;
 
 
     public AROverlayView(Context context) {
@@ -56,14 +57,16 @@ public class AROverlayView extends View implements AsyncResponse{
             Toast.makeText(getContext(),"Please Check Network Setting",Toast.LENGTH_SHORT).show();
         }
         else {
-
-            String API_URL1 = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location="+currentLocation.getLatitude()+","+currentLocation.getLongitude()+"&radius="+range+"&type=train_station&sensor=true&key=AIzaSyCUA3sVAVODHyhgLgXahQ3EKqFGyAZK73o";
+            AROverlayView.range = range;
+            AROverlayView.currentLocation1=currentLocation;
+            API_URL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location="+currentLocation.getLatitude()
+                    +","+currentLocation.getLongitude()+"&radius="+range+
+                    "&type="+MainActivity.placeType+"&sensor=true&key=AIzaSyCUA3sVAVODHyhgLgXahQ3EKqFGyAZK73o";
 
             PlacesAsyncTask placesAsyncTask= new PlacesAsyncTask();
             placesAsyncTask.delegate = this;
-            placesAsyncTask.execute(API_URL1);
-            Log.e("API",API_URL1);
-            API_URL=API_URL1;
+            placesAsyncTask.execute(API_URL);
+            Log.e("API",API_URL);
             this.currentLocation = currentLocation;
             this.invalidate();
         }

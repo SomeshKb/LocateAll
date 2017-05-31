@@ -8,7 +8,7 @@ import android.widget.ListView;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.somesh.locateall.AROverlayView.API_URL;
+
 
 public class ListActivity extends AppCompatActivity implements AsyncResponse{
 
@@ -30,7 +30,9 @@ public class ListActivity extends AppCompatActivity implements AsyncResponse{
         // Set the adapter on the {@link ListView}
         // so the list can be populated in the user interface
         arPointListView.setAdapter(mAdapter);
-
+        String API_URL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location="+AROverlayView.currentLocation1.getLatitude()
+                +","+AROverlayView.currentLocation1.getLongitude()+"&radius="+AROverlayView.range+
+                "&type="+MainActivity.placeType+"&sensor=true&key=AIzaSyCUA3sVAVODHyhgLgXahQ3EKqFGyAZK73o";
         PlacesAsyncTask placesAsyncTask= new PlacesAsyncTask();
         placesAsyncTask.delegate = this;
         placesAsyncTask.execute(API_URL);

@@ -21,8 +21,11 @@ import android.util.Log;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.SeekBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,7 +34,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements SensorEventListener, LocationListener ,SeekBar.OnSeekBarChangeListener {
+public class MainActivity extends AppCompatActivity implements SensorEventListener, LocationListener ,SeekBar.OnSeekBarChangeListener, AdapterView.OnItemSelectedListener {
     SeekBar seekBar;
     final static String TAG = "MainActivity";
     private SurfaceView surfaceView;
@@ -56,6 +59,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     boolean isNetworkEnabled;
     boolean locationServiceAvailable;
 
+    String[] places={"hospital","laundry","cafe","bank","train_station"};
+
+    public static String placeType = "hospital";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,6 +75,15 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         surfaceView = (SurfaceView) findViewById(R.id.surface_view);
         tvCurrentLocation = (TextView) findViewById(R.id.tv_current_location);
         arOverlayView = new AROverlayView(this);
+
+        Spinner spin = (Spinner) findViewById(R.id.spinner3);
+        spin.setOnItemSelectedListener(this);
+
+        //Creating the ArrayAdapter instance having the country list
+        ArrayAdapter aa = new ArrayAdapter(this,android.R.layout.simple_spinner_item,places);
+        aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        //Setting the ArrayAdapter data on the Spinner
+        spin.setAdapter(aa);
     }
 
     @Override
@@ -289,6 +305,16 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     public void onStopTrackingTouch(SeekBar seekBar) {
         Toast.makeText(MainActivity.this,"Range :"+range/1000+" km",Toast.LENGTH_SHORT).show();
         updateLatestLocation();
+
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        placeType=parent.getItemAtPosition(position).toString();
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
 
     }
 }
