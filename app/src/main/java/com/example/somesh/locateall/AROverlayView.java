@@ -1,20 +1,17 @@
 package com.example.somesh.locateall;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.location.Location;
 import android.opengl.Matrix;
-import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
-
-import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,9 +24,9 @@ import java.util.Random;
 
 
 public class AROverlayView extends View implements AsyncResponse{
-
-    Context context;
     public static  String API_URL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=23.2599,77.4126&radius=20000&type=train_station&sensor=true&key=AIzaSyCUA3sVAVODHyhgLgXahQ3EKqFGyAZK73o";
+    Bitmap b;
+    Context context;
     private float[] rotatedProjectionMatrix = new float[16];
     private Location currentLocation;
     private List<ARPoint> arPoints;
@@ -40,7 +37,8 @@ public class AROverlayView extends View implements AsyncResponse{
 
         super(context);
         this.context = context;
-      //  PlacesAsyncTask placesAsyncTask= new PlacesAsyncTask();
+
+        //  PlacesAsyncTask placesAsyncTask= new PlacesAsyncTask();
         //placesAsyncTask.delegate = this;
         //placesAsyncTask.execute(API_URL);
         Log.e("API",API_URL);
@@ -76,7 +74,7 @@ public class AROverlayView extends View implements AsyncResponse{
             return;
         }
 
-        final int radius = 12;
+        b = BitmapFactory.decodeResource(getResources(), R.drawable.eat);
         Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         paint.setStyle(Paint.Style.FILL);
         paint.setColor(Color.WHITE);
@@ -89,29 +87,7 @@ if(arPoints==null){
 else {
         for (int i = 0,j=0; i < arPoints.size(); i++,j++) {
 
-            switch (j){
-                case 1:        paint.setColor(Color.WHITE);break;
-                case 2:        paint.setColor(Color.BLUE);break;
-                case 3:        paint.setColor(Color.MAGENTA);break;
-                case 4:        paint.setColor(Color.YELLOW);break;
-                case 5:        paint.setColor(Color.RED);break;
-                case 6:        paint.setColor(Color.GRAY);break;
-                case 7:        paint.setColor(Color.GREEN);break;
-                case 8:        paint.setColor(Color.RED);break;
-                case 9:        paint.setColor(Color.YELLOW);break;
-                case 10:        paint.setColor(Color.WHITE);break;
-                case 11:        paint.setColor(Color.BLACK);break;
-                case 12:        paint.setColor(Color.MAGENTA);break;
-                case 13:        paint.setColor(Color.GREEN);break;
-                case 14:        paint.setColor(Color.BLUE);break;
-                case 15:        paint.setColor(Color.YELLOW);break;
-                case 0:        paint.setColor(Color.RED);break;
-                default:        j=0;
 
-
-            }
-
-            Log.e("Color",""+j);
 
             float[] currentLocationInECEF = LocationHelper.WSG84toECEF(currentLocation);
             float[] pointInECEF = LocationHelper.WSG84toECEF(arPoints.get(i).getLocation());
@@ -126,7 +102,11 @@ else {
                 float x = (0.5f + cameraCoordinateVector[0] / cameraCoordinateVector[3]) * canvas.getWidth();
                 float y = (0.5f - cameraCoordinateVector[1] / cameraCoordinateVector[3]) * canvas.getHeight();
 
-                canvas.drawCircle(x, y, radius, paint);
+                //   canvas.drawCircle(x, y, radius, paint);
+                canvas.drawBitmap(b, x, y, paint);
+
+
+
                 canvas.drawText(arPoints.get(i).getName(), x - (30 * arPoints.get(i).getName().length() / 2), y - 10, paint);
             }
         }
@@ -139,7 +119,7 @@ else {
         Random rand = new Random();
         int  n = rand.nextInt(100) + 1;
         int altitude=n*20;
-                arPoints = new ArrayList<>();
+        arPoints = new ArrayList<>();
         int i=0;
         for (ARPoint place : output) {
             Double latP = place.getLocation().getLatitude();
